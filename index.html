@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buon Compleanno Titta!</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎂</text></svg>">
     <style>
         * {
             margin: 0;
@@ -304,13 +305,24 @@ console.log(oggi.celebra());
         🎵
     </div>
 
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop autoplay>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        let musicPlaying = false;
+        let musicPlaying = true;
         const music = document.getElementById('bgMusic');
+        
+        // Avvia la musica appena possibile
+        window.addEventListener('load', () => {
+            music.play().then(() => {
+                document.getElementById('musicBtn').textContent = '🔊';
+            }).catch(() => {
+                // Se l'autoplay è bloccato, la musica partirà al primo click
+                musicPlaying = false;
+                document.getElementById('musicBtn').textContent = '🎵';
+            });
+        });
         
         // Animazioni sequenziali
         setTimeout(() => {
@@ -425,12 +437,13 @@ console.log(oggi.celebra());
             }
         });
 
-        // Auto-play music dopo interazione utente
+        // Auto-play music dopo interazione utente (fallback se autoplay bloccato)
         document.addEventListener('click', () => {
             if (!musicPlaying) {
-                music.play().catch(() => {});
-                document.getElementById('musicBtn').textContent = '🔊';
-                musicPlaying = true;
+                music.play().then(() => {
+                    document.getElementById('musicBtn').textContent = '🔊';
+                    musicPlaying = true;
+                }).catch(() => {});
             }
         }, { once: true });
     </script>
